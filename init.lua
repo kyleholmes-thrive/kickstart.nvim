@@ -1,89 +1,3 @@
---[[
-
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
-What is Kickstart?
-
-  Kickstart.nvim is *not* a distribution.
-
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
-
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-
-Kickstart Guide:
-
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
-
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know the Neovim basics, you can skip this step.)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua.
-
-  Next, run AND READ `:help`.
-    This will open up a help window with some basic information
-    about reading, navigating and searching the builtin help documentation.
-
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite Neovim features.
-
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-    which is very useful when you're not exactly sure of what you're looking for.
-
-  I have left several `:help X` comments throughout the init.lua
-    These are hints about where to find more information about the relevant settings,
-    plugins or Neovim features used in Kickstart.
-
-   NOTE: Look for lines like this
-
-    Throughout the file. These are for you, the reader, to help you understand what is happening.
-    Feel free to delete them once you know what you're doing, but they should serve as a guide
-    for when you are first encountering a few different constructs in your Neovim config.
-
-If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
-
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :)
---]]
-
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -91,7 +5,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -99,13 +13,15 @@ vim.g.have_nerd_font = false
 --  For more options, you can see `:help option-list`
 
 -- Make line numbers default
-vim.o.number = true
+-- vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.number = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
+vim.o.mousehide = true
 
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
@@ -119,7 +35,7 @@ vim.schedule(function()
 end)
 
 -- Enable break indent
-vim.o.breakindent = true
+vim.o.copyindent = true
 
 -- Save undo history
 vim.o.undofile = true
@@ -152,19 +68,42 @@ vim.o.splitbelow = true
 vim.o.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
--- Preview substitutions live, as you type!
-vim.o.inccommand = 'split'
+-- Preview substitutions live, as you type! (nosplit shows preview inline)
+vim.o.inccommand = 'nosplit'
+
+-- Better visual mode feedback
+vim.o.selection = 'exclusive'
 
 -- Show which line your cursor is on
 vim.o.cursorline = true
 
+-- Show file status in terminal/tmux window title
+vim.o.title = true
+
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.o.scrolloff = 10
+
+-- Disable line wrap
+vim.o.wrap = false
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
+
+-- Tab settings
+vim.o.tabstop = 4 -- Number of spaces that a <Tab> in the file counts for
+vim.o.shiftwidth = 4 -- Number of spaces to use for each step of (auto)indent
+vim.o.expandtab = true -- Use spaces instead of tabs
+vim.o.softtabstop = 4 -- Number of spaces that a <Tab> counts for while editing
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'yaml', 'yml' },
+  callback = function()
+    vim.o.tabstop = 2
+    vim.o.shiftwidth = 2
+    vim.o.softtabstop = 2
+  end,
+})
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -172,9 +111,10 @@ vim.o.confirm = true
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-
--- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+vim.keymap.set('n', 'n', 'nzzzv')
+vim.keymap.set('n', 'N', 'Nzzzv')
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -182,7 +122,8 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+-- Changed from <Esc><Esc> to avoid interfering with insert mode escape
+vim.keymap.set('t', '<C-[><C-[>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -347,6 +288,9 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>g', group = '[G]it' },
+        { '<leader>d', group = '[D]bt' },
+        { '<leader>e', group = '[E]xplorer' },
       },
     },
   },
@@ -404,15 +348,29 @@ require('lazy').setup({
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
       require('telescope').setup {
-        -- You can put your default mappings / updates / etc. in here
-        --  All the info you're looking for is in `:help telescope.setup()`
-        --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
-        -- pickers = {}
+        defaults = {
+          file_sorter = require('telescope.sorters').get_fzy_sorter,
+          file_ignore_patterns = {
+            'node_modules',
+            '.git/',
+            'dist/',
+            'build/',
+          },
+          vimgrep_arguments = {
+            'rg',
+            '--color=never',
+            '--no-heading',
+            '--with-filename',
+            '--line-number',
+            '--column',
+            '--smart-case',
+          },
+        },
+        pickers = {
+          find_files = {
+            find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/*' },
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -428,7 +386,13 @@ require('lazy').setup({
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sf', function()
+        local builtin = require 'telescope.builtin'
+        local ok = pcall(builtin.git_files, { show_untracked = true })
+        if not ok then
+          builtin.find_files()
+        end
+      end, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
@@ -659,7 +623,7 @@ require('lazy').setup({
       --  By default, Neovim doesn't support everything that is in the LSP specification.
       --  When you add blink.cmp, luasnip, etc. Neovim now has *more* capabilities.
       --  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
-      local capabilities = require('blink.cmp').get_lsp_capabilities()
+      --local capabilities = require('blink.cmp').get_lsp_capabilities()
 
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -673,8 +637,26 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
         -- rust_analyzer = {},
+        pyright = {},
+        sqlls = {},
+        yamlls = {
+          settings = {
+            yaml = {
+              schemas = {
+                ['https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/dbt_yml_files.json'] = {
+                  'dbt_project.yml',
+                  '**/models/**/*.yml',
+                  '**/seeds/**/*.yml',
+                  '**/snapshots/**/*.yml',
+                  '**/analysis/**/*.yml',
+                  '**/macros/**/*.yml',
+                  '**/tests/**/*.yml',
+                },
+              },
+            },
+          },
+        },
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -756,7 +738,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { c = true, cpp = true, yaml = true, yml = true }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         else
@@ -777,124 +759,158 @@ require('lazy').setup({
     },
   },
 
-  { -- Autocompletion
-    'saghen/blink.cmp',
-    event = 'VimEnter',
-    version = '1.*',
-    dependencies = {
-      -- Snippet Engine
-      {
-        'L3MON4D3/LuaSnip',
-        version = '2.*',
-        build = (function()
-          -- Build Step is needed for regex support in snippets.
-          -- This step is not supported in many windows environments.
-          -- Remove the below condition to re-enable on windows.
-          if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
-            return
-          end
-          return 'make install_jsregexp'
-        end)(),
-        dependencies = {
-          -- `friendly-snippets` contains a variety of premade snippets.
-          --    See the README about individual language/framework/plugin snippets:
-          --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
-        },
-        opts = {},
-      },
-      'folke/lazydev.nvim',
-    },
-    --- @module 'blink.cmp'
-    --- @type blink.cmp.Config
-    opts = {
-      keymap = {
-        -- 'default' (recommended) for mappings similar to built-in completions
-        --   <c-y> to accept ([y]es) the completion.
-        --    This will auto-import if your LSP supports it.
-        --    This will expand snippets if the LSP sent a snippet.
-        -- 'super-tab' for tab to accept
-        -- 'enter' for enter to accept
-        -- 'none' for no mappings
-        --
-        -- For an understanding of why the 'default' preset is recommended,
-        -- you will need to read `:help ins-completion`
-        --
-        -- No, but seriously. Please read `:help ins-completion`, it is really good!
-        --
-        -- All presets have the following mappings:
-        -- <tab>/<s-tab>: move to right/left of your snippet expansion
-        -- <c-space>: Open menu or open docs if already open
-        -- <c-n>/<c-p> or <up>/<down>: Select next/previous item
-        -- <c-e>: Hide menu
-        -- <c-k>: Toggle signature help
-        --
-        -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'default',
+  -- { -- Autocompletion
+  --   'saghen/blink.cmp',
+  --   event = 'VimEnter',
+  --   version = '1.*',
+  --   dependencies = {
+  --     -- Snippet Engine
+  --     {
+  --       'L3MON4D3/LuaSnip',
+  --       version = '2.*',
+  --       build = (function()
+  --         -- Build Step is needed for regex support in snippets.
+  --         -- This step is not supported in many windows environments.
+  --         -- Remove the below condition to re-enable on windows.
+  --         if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
+  --           return
+  --         end
+  --         return 'make install_jsregexp'
+  --       end)(),
+  --       dependencies = {
+  --         {
+  --           'rafamadriz/friendly-snippets',
+  --           config = function()
+  --             require('luasnip.loaders.from_vscode').lazy_load()
+  --           end,
+  --         },
+  --       },
+  --       config = function()
+  --         -- Load custom dbt snippets
+  --         -- require('snippets.dbt').load_snippets()
+  --       end,
+  --     },
+  --     'folke/lazydev.nvim',
+  --   },
+  --   --- @module 'blink.cmp'
+  --   --- @type blink.cmp.Config
+  --   opts = {
+  --     keymap = {
+  --       -- 'default' (recommended) for mappings similar to built-in completions
+  --       --   <c-y> to accept ([y]es) the completion.
+  --       --    This will auto-import if your LSP supports it.
+  --       --    This will expand snippets if the LSP sent a snippet.
+  --       -- 'super-tab' for tab to accept
+  --       -- 'enter' for enter to accept
+  --       -- 'none' for no mappings
+  --       --
+  --       -- For an understanding of why the 'default' preset is recommended,
+  --       -- you will need to read `:help ins-completion`
+  --       --
+  --       -- No, but seriously. Please read `:help ins-completion`, it is really good!
+  --       --
+  --       -- All presets have the following mappings:
+  --       -- <tab>/<s-tab>: move to right/left of your snippet expansion
+  --       -- <c-space>: Open menu or open docs if already open
+  --       -- <c-n>/<c-p> or <up>/<down>: Select next/previous item
+  --       -- <c-e>: Hide menu
+  --       -- <c-k>: Toggle signature help
+  --       --
+  --       -- See :h blink-cmp-config-keymap for defining your own keymap
+  --       preset = 'default',
+  --
+  --       -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
+  --       --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
+  --     },
+  --
+  --     appearance = {
+  --       -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+  --       -- Adjusts spacing to ensure icons are aligned
+  --       nerd_font_variant = 'mono',
+  --     },
+  --
+  --     completion = {
+  --       -- By default, you may press `<c-space>` to show the documentation.
+  --       -- Optionally, set `auto_show = true` to show the documentation after a delay.
+  --       documentation = { auto_show = false, auto_show_delay_ms = 500 },
+  --     },
+  --
+  --     sources = {
+  --       default = { 'lsp', 'path', 'snippets', 'lazydev' },
+  --       providers = {
+  --         lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
+  --       },
+  --     },
+  --
+  --     snippets = { preset = 'luasnip' },
+  --
+  --     -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
+  --     -- which automatically downloads a prebuilt binary when enabled.
+  --     --
+  --     -- By default, we use the Lua implementation instead, but you may enable
+  --     -- the rust implementation via `'prefer_rust_with_warning'`
+  --     --
+  --     -- See :h blink-cmp-config-fuzzy for more information
+  --     fuzzy = { implementation = 'lua' },
+  --
+  --     -- Shows a signature help window while you type arguments for a function
+  --     signature = { enabled = true },
+  --   },
+  -- },
 
-        -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
-        --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
-      },
-
-      appearance = {
-        -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
-        -- Adjusts spacing to ensure icons are aligned
-        nerd_font_variant = 'mono',
-      },
-
-      completion = {
-        -- By default, you may press `<c-space>` to show the documentation.
-        -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        documentation = { auto_show = false, auto_show_delay_ms = 500 },
-      },
-
-      sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev' },
-        providers = {
-          lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
-        },
-      },
-
-      snippets = { preset = 'luasnip' },
-
-      -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
-      -- which automatically downloads a prebuilt binary when enabled.
-      --
-      -- By default, we use the Lua implementation instead, but you may enable
-      -- the rust implementation via `'prefer_rust_with_warning'`
-      --
-      -- See :h blink-cmp-config-fuzzy for more information
-      fuzzy = { implementation = 'lua' },
-
-      -- Shows a signature help window while you type arguments for a function
-      signature = { enabled = true },
-    },
-  },
-
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+  { -- Monokai Pro colorscheme
+    'loctvl842/monokai-pro.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
+      require('monokai-pro').setup {
+        transparent_background = true,
+        terminal_colors = true,
+        devicons = true, -- highlight the icons of `nvim-web-devicons`
         styles = {
-          comments = { italic = false }, -- Disable italics in comments
+          comment = { italic = true },
+          keyword = { italic = true }, -- change style
+          type = { italic = true },
+          storageclass = { italic = true },
+          structure = { italic = true },
+          parameter = { italic = true },
+          annotation = { italic = true },
+          tag_attribute = { italic = true },
+        },
+        filter = 'pro', -- classic | octagon | pro | machine | ristretto | spectrum
+        -- Enable this will disable filter option
+        day_night = {
+          enable = false, -- turn off by default
+          day_filter = 'pro', -- classic | octagon | pro | machine | ristretto | spectrum
+          night_filter = 'spectrum', -- classic | octagon | pro | machine | ristretto | spectrum
+        },
+        inc_search = 'background', -- underline | background
+        background_clear = {
+          'float_win',
+          'toggleterm',
+          'telescope',
+          'which-key',
+          'renamer',
+          'notify',
+          'nvim-tree',
+          'neo-tree',
+          'nvim',
+          'bufferline',
+          -- "bufferline", -- better used if background of `neo-tree` or `nvim-tree` is cleared
+        }, -- "float_win", "toggleterm", "telescope", "which-key", "renamer", "neo-tree", "nvim-tree", "bufferline"
+        plugins = {
+          bufferline = {
+            underline_selected = false,
+            underline_visible = false,
+          },
+          indent_blankline = {
+            context_highlight = 'default', -- default | pro
+            context_start_underline = false,
+          },
         },
       }
 
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      -- Load the colorscheme
+      vim.cmd.colorscheme 'monokai-pro'
     end,
   },
 
@@ -934,6 +950,19 @@ require('lazy').setup({
         return '%2l:%-2v'
       end
 
+      -- Add modified indicator to filename section
+      ---@diagnostic disable-next-line: duplicate-set-field
+      statusline.section_filename = function()
+        local filename = vim.fn.expand '%:t'
+        if filename == '' then
+          filename = '[No Name]'
+        end
+        if vim.bo.modified then
+          filename = filename .. ' ●'
+        end
+        return filename
+      end
+
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
@@ -944,7 +973,23 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'sql',
+        'python',
+        'yaml',
+        'json',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -963,7 +1008,234 @@ require('lazy').setup({
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons',
+      'MunifTanjim/nui.nvim',
+    },
+    keys = {
+      { '<leader>e', '<cmd>Neotree toggle<cr>', desc = 'Toggle file [E]xplorer' },
+      { '<leader>ef', '<cmd>Neotree reveal<cr>', desc = '[E]xplorer [F]ind file' },
+    },
+    config = function()
+      require('neo-tree').setup {
+        close_if_last_window = true,
+        popup_border_style = 'rounded',
+        enable_git_status = true,
+        enable_diagnostics = true,
+        default_component_configs = {
+          container = {
+            enable_character_fade = true,
+          },
+          indent = {
+            indent_size = 2,
+            padding = 1,
+            with_markers = true,
+            indent_marker = '│',
+            last_indent_marker = '└',
+            highlight = 'NeoTreeIndentMarker',
+          },
+          icon = {
+            folder_closed = '󰉓',
+            folder_open = '󰝰',
+            folder_empty = '󰉖',
+            folder_empty_open = '󰷏',
+            default = '󰈚',
+          },
+          git_status = {
+            symbols = {
+              added = '+',
+              modified = '~',
+              deleted = '✖',
+              renamed = '➜',
+              untracked = '?',
+              ignored = '',
+              unstaged = '✗',
+              staged = '✓',
+              conflict = '',
+            },
+          },
+        },
+        window = {
+          position = 'left',
+          width = 60,
+          mapping_options = {
+            noremap = true,
+            nowait = true,
+          },
+        },
+        filesystem = {
+          filtered_items = {
+            hide_dotfiles = false,
+            hide_gitignored = false,
+          },
+        },
+      }
+    end,
+  },
+  {
+    'github/copilot.vim',
+    event = 'InsertEnter', -- Load when entering insert mode
+    config = function()
+      -- Enable copilot for specific filetypes
+      vim.g.copilot_filetypes = {
+        ['*'] = false,
+        ['lua'] = true,
+        ['python'] = true,
+        ['sql'] = true,
+        ['yaml'] = true,
+        ['json'] = true,
+      }
 
+      -- Disable default tab mapping
+      vim.g.copilot_no_tab_map = true
+
+      -- Simple keymaps - no timing issues
+      vim.keymap.set('i', '<C-y>', 'copilot#Accept("\\<CR>")', {
+        expr = true,
+        replace_keycodes = false,
+        silent = true,
+        desc = 'Accept entire Copilot suggestion',
+      })
+
+      -- Accept word by word with Ctrl+Right Arrow
+      vim.keymap.set('i', '<C-Right>', '<Plug>(copilot-accept-word)', {
+        desc = 'Accept Copilot word',
+      })
+
+      -- Accept current line with Ctrl+Down Arrow
+      vim.keymap.set('i', '<C-Down>', '<Plug>(copilot-accept-line)', {
+        desc = 'Accept Copilot line',
+      })
+
+      -- Navigate between suggestions
+      vim.keymap.set('i', '<M-]>', '<Plug>(copilot-next)', {
+        desc = 'Next Copilot suggestion',
+      })
+      vim.keymap.set('i', '<M-[>', '<Plug>(copilot-previous)', {
+        desc = 'Previous Copilot suggestion',
+      })
+    end,
+  },
+  {
+    'christoomey/vim-tmux-navigator',
+    cmd = {
+      'TmuxNavigateLeft',
+      'TmuxNavigateDown',
+      'TmuxNavigateUp',
+      'TmuxNavigateRight',
+      'TmuxNavigatePrevious',
+      'TmuxNavigatorProcessList',
+    },
+    keys = {
+      { '<c-h>', '<cmd><C-U>TmuxNavigateLeft<cr>' },
+      { '<c-j>', '<cmd><C-U>TmuxNavigateDown<cr>' },
+      { '<c-k>', '<cmd><C-U>TmuxNavigateUp<cr>' },
+      { '<c-l>', '<cmd><C-U>TmuxNavigateRight<cr>' },
+      { '<c-\\>', '<cmd><C-U>TmuxNavigatePrevious<cr>' },
+    },
+  },
+  {
+    'tpope/vim-fugitive',
+    cmd = { 'Git', 'Gdiffsplit', 'Gread', 'Gwrite', 'Ggrep', 'GMove', 'GDelete', 'GBrowse' },
+    keys = {
+      { '<leader>gs', '<cmd>lua GitStatusFloat()<cr>', desc = 'Git status (float)' },
+      { '<leader>gc', '<cmd>lua GitCommitFloat()<cr>', desc = 'Git commit (float)' },
+      { '<leader>gl', '<cmd>Git log --oneline<cr>', desc = 'Git log' },
+      { '<leader>gp', '<cmd>Git push<cr>', desc = 'Git push' },
+      { '<leader>gP', '<cmd>Git pull<cr>', desc = 'Git pull' },
+      { '<leader>gb', '<cmd>Git blame<cr>', desc = 'Git blame' },
+      { '<leader>gd', '<cmd>Gdiffsplit<cr>', desc = 'Git diff split' },
+    },
+    config = function()
+      -- Create floating window for git status
+      function GitStatusFloat()
+        -- Save current window
+        local current_win = vim.api.nvim_get_current_win()
+
+        vim.cmd 'Git'
+
+        -- Get the git buffer
+        local buf = vim.api.nvim_get_current_buf()
+
+        -- Check if buffer is valid
+        if not vim.api.nvim_buf_is_valid(buf) then
+          return
+        end
+
+        -- Create floating window dimensions
+        local width = math.ceil(vim.o.columns * 0.8)
+        local height = math.ceil(vim.o.lines * 0.8)
+        local col = math.ceil((vim.o.columns - width) / 2)
+        local row = math.ceil((vim.o.lines - height) / 2)
+
+        -- Create floating window
+        local float_win = vim.api.nvim_open_win(buf, true, {
+          relative = 'editor',
+          width = width,
+          height = height,
+          col = col,
+          row = row,
+          border = 'rounded',
+          title = ' Git Status ',
+          title_pos = 'center',
+        })
+
+        -- Close the original split if it exists and isn't the current window
+        vim.schedule(function()
+          local wins = vim.api.nvim_list_wins()
+          for _, win in ipairs(wins) do
+            if win ~= float_win and vim.api.nvim_win_is_valid(win) then
+              local win_buf = vim.api.nvim_win_get_buf(win)
+              if win_buf == buf and win ~= current_win then
+                vim.api.nvim_win_close(win, false)
+              end
+            end
+          end
+        end)
+
+        -- Set buffer-local keymaps
+        vim.keymap.set('n', 'q', '<cmd>close<cr>', { buffer = buf, silent = true })
+        vim.keymap.set('n', '<Esc>', '<cmd>close<cr>', { buffer = buf, silent = true })
+      end
+
+      -- Create floating window for git commit
+      function GitCommitFloat()
+        local width = math.ceil(vim.o.columns * 0.7)
+        local height = math.ceil(vim.o.lines * 0.7)
+        local col = math.ceil((vim.o.columns - width) / 2)
+        local row = math.ceil((vim.o.lines - height) / 2)
+
+        -- Create a new buffer for the commit
+        local buf = vim.api.nvim_create_buf(false, true)
+
+        local float_win = vim.api.nvim_open_win(buf, true, {
+          relative = 'editor',
+          width = width,
+          height = height,
+          col = col,
+          row = row,
+          border = 'rounded',
+          title = ' Git Commit ',
+          title_pos = 'center',
+        })
+
+        -- Run git commit in the floating window
+        vim.cmd 'terminal git commit'
+
+        -- Set buffer-local keymaps
+        vim.keymap.set('n', 'q', '<cmd>close<cr>', { buffer = buf, silent = true })
+        vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n><cmd>close<cr>', { buffer = buf, silent = true })
+      end
+
+      -- Quick shortcuts
+      vim.keymap.set('n', '<leader>ga', '<cmd>Git add %<cr>', { desc = 'Git add current file' })
+      vim.keymap.set('n', '<leader>gr', '<cmd>Git reset %<cr>', { desc = 'Git reset current file' })
+    end,
+  },
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -973,10 +1245,16 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
+  -- Auto-pairs plugin for automatic bracket/quote closing
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    opts = {},
+  },
+
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
@@ -1011,6 +1289,9 @@ require('lazy').setup({
     },
   },
 })
+
+-- [[ Load DBT functionality ]]
+require('dbt').setup()
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
