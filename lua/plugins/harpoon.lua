@@ -4,11 +4,8 @@ return {
   dependencies = { 'nvim-lua/plenary.nvim' },
   config = function()
     local harpoon = require 'harpoon'
-
-    -- REQUIRED
     harpoon:setup()
 
-    -- Basic harpoon keybindings
     vim.keymap.set('n', '<leader>a', function()
       harpoon:list():add()
     end, { desc = 'Add file to harpoon' })
@@ -16,7 +13,6 @@ return {
       harpoon.ui:toggle_quick_menu(harpoon:list())
     end, { desc = 'Toggle harpoon quick menu' })
 
-    -- Navigate to marks 1-4 using more reliable keymaps
     vim.keymap.set('n', '<leader>1', function()
       harpoon:list():select(1)
     end, { desc = 'Harpoon to mark 1' })
@@ -30,7 +26,6 @@ return {
       harpoon:list():select(4)
     end, { desc = 'Harpoon to mark 4' })
 
-    -- Toggle previous & next buffers stored within Harpoon list
     vim.keymap.set('n', '<C-S-P>', function()
       harpoon:list():prev()
     end, { desc = 'Harpoon previous' })
@@ -38,7 +33,6 @@ return {
       harpoon:list():next()
     end, { desc = 'Harpoon next' })
 
-    -- Clear all harpoon marks
     vim.keymap.set('n', '<leader>hc', function()
       harpoon:list():clear()
     end, { desc = 'Clear all harpoon marks' })

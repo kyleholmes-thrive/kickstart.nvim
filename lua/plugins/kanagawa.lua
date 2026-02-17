@@ -1,5 +1,3 @@
--- Kanagawa colorscheme for Neovim
--- https://github.com/rebelot/kanagawa.nvim
 return {
   'rebelot/kanagawa.nvim',
   lazy = false,
@@ -13,7 +11,7 @@ return {
     transparent = false,
     dimInactive = false,
     terminalColors = true,
-    theme = 'dragon', -- wave, dragon, lotus
+    theme = 'dragon',
     background = {
       dark = 'dragon',
       light = 'lotus',
@@ -23,16 +21,16 @@ return {
         all = {
           ui = {
             bg_gutter = 'none',
-            bg = '#282828', -- Add this line to override the main background
+            bg = '#282828',
           },
         },
       },
     },
     overrides = function(colors)
       return {
-        Normal = { bg = '#282828' }, -- Override Normal background
-        NormalFloat = { bg = '#282828' }, -- Override floating windows
-        NormalNC = { bg = '#282828' }, -- Override non-current windows
+        Normal = { bg = '#282828' },
+        NormalFloat = { bg = '#282828' },
+        NormalNC = { bg = '#282828' },
         CursorLine = { bg = colors.palette.waveBlue1 },
         Search = { bg = colors.palette.oniViolet, fg = colors.palette.sumiInk0 },
       }
