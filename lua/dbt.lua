@@ -22,6 +22,53 @@ local function run_dbt_with_selection(cmd)
   end
 end
 
+-- Jump to dbt model definition from ref() call
+local function goto_dbt_model()
+  -- Get the current line
+  local line = vim.api.nvim_get_current_line()
+
+  -- Extract model name from ref('model_name') or ref("model_name")
+  local model_name = line:match("ref%(['\"]([^'\"]+)['\"]%)")
+
+  if not model_name then
+    vim.notify("No ref() call found on current line", vim.log.levels.WARN)
+    return
+  end
+
+  -- Find the dbt project root (look for dbt_project.yml)
+  local project_root = vim.fn.findfile('dbt_project.yml', '.;')
+  if project_root == '' then
+    vim.notify("Could not find dbt_project.yml", vim.log.levels.ERROR)
+    return
+  end
+
+  local project_dir = vim.fn.fnamemodify(project_root, ':h')
+
+  -- Search for the model file in the models directory
+  local find_cmd = string.format(
+    "find '%s/models' -type f -name '%s.sql' 2>/dev/null",
+    project_dir,
+    model_name
+  )
+
+  local files = vim.fn.systemlist(find_cmd)
+
+  if #files == 0 then
+    vim.notify(string.format("Model '%s' not found", model_name), vim.log.levels.WARN)
+  elseif #files == 1 then
+    vim.cmd('edit ' .. files[1])
+  else
+    -- Multiple files found, let user choose
+    vim.ui.select(files, {
+      prompt = string.format("Multiple matches for '%s':", model_name),
+    }, function(choice)
+      if choice then
+        vim.cmd('edit ' .. choice)
+      end
+    end)
+  end
+end
+
 -- Setup DBT keymaps
 function M.setup_keymaps()
   -- DBT Command Keymaps
@@ -34,6 +81,20 @@ function M.setup_keymaps()
   vim.keymap.set('n', '<leader>dc', function()
     run_dbt_with_selection 'compile'
   end, { desc = '[D]bt [C]ompile current model' })
+end
+
+-- Setup SQL-specific keymaps
+function M.setup_sql_keymaps()
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'sql',
+    callback = function()
+      -- Jump to model definition (overrides default gd in SQL files)
+      vim.keymap.set('n', 'gd', goto_dbt_model, {
+        buffer = true,
+        desc = 'Go to dbt model definition'
+      })
+    end,
+  })
 end
 
 -- Setup DBT snippets for SQL files
@@ -81,6 +142,7 @@ end
 -- Main setup function
 function M.setup()
   M.setup_keymaps()
+  M.setup_sql_keymaps()
   M.setup_sql_snippets()
 end
 
