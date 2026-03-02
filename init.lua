@@ -92,10 +92,8 @@ rtp:prepend(lazypath)
 
 -- [[ Plugins ]]
 require('lazy').setup({
-  require 'plugins.neo-tree',
-  require 'plugins.gitsigns',
+require 'plugins.gitsigns',
   require 'plugins.which-key',
-  require 'plugins.telescope',
   require 'plugins.conform',
   require 'plugins.todo-comments',
   require 'plugins.mini',
@@ -111,8 +109,9 @@ require('lazy').setup({
   require 'plugins.oil',
   require 'plugins.flash',
   require 'plugins.autopairs',
-  require 'plugins.indent_line',
   require 'plugins.lazydev',
+  require 'plugins.ts-comments',
+  require 'plugins.lualine',
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {

@@ -42,7 +42,6 @@ return {
       { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       { '<leader>g', group = '[G]it' },
       { '<leader>d', group = '[D]bt' },
-      { '<leader>e', group = '[E]xplorer' },
     },
   },
 }

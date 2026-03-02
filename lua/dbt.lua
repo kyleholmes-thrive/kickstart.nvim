@@ -133,8 +133,8 @@ function M.setup_sql_snippets()
       vim.keymap.set('i', '__g', [[group by all]], { buffer = true, desc = 'group by all' })
       -- date to month snippet
       vim.keymap.set('i', '__d', [[date_trunc('month', )::date]], { buffer = true, desc = 'Conver date to month' })
-      -- date to month snippet
-      vim.keymap.set('i', '__c', [[convert_timezone('America/Los_Angeles', '')::timestamp_tz]], { buffer = true, desc = 'Conver timestamp to PTZ timezone_tz' })
+      -- convert timezone snippet
+      vim.keymap.set('i', '__tz', [[convert_timezone('America/Los_Angeles', '')::timestamp_tz]], { buffer = true, desc = 'Convert timestamp to PT timezone_tz' })
     end,
   })
 end
